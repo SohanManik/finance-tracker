@@ -159,7 +159,7 @@ export default function Login() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="you@email.com"
+              placeholder="Type username"
               required
               className="rounded-lg px-3 py-2 text-sm focus:outline-none"
               style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
@@ -167,41 +167,39 @@ export default function Login() {
           </div>
 
           {!isForgotPassword && (
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between">
-                <label className="text-sm" style={{ color: '#3AAFA9' }}>Password</label>
-                {!isSignUp && (
-                  <button
-                    type="button"
-                    onClick={handleForgotPassword}
-                    className="text-xs underline"
-                    style={{ color: '#3AAFA9' }}
-                  >
-                    Forgot password?
-                  </button>
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                  className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none pr-16"
-                  style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-                  style={{ color: '#3AAFA9' }}
-                >
-                  {showPassword ? 'Hide' : 'Show'}
-                </button>
-              </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-sm" style={{ color: '#3AAFA9' }}>Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Type password"
+                required
+                className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none pr-16"
+                style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+                style={{ color: '#3AAFA9' }}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
             </div>
-          )}
+            {!isSignUp && (
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-xs underline self-start mt-1"
+                style={{ color: '#3AAFA9' }}
+              >
+                Forgot Password?
+              </button>
+            )}
+          </div>
+        )}
 
           {isSignUp && password.length > 0 && (
             <div className="rounded-lg p-3 flex flex-col gap-1.5" style={{ backgroundColor: '#17252A', border: '1px solid #2B7A7840' }}>
@@ -225,7 +223,7 @@ export default function Login() {
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Type password"
                 required
                 className="rounded-lg px-3 py-2 text-sm focus:outline-none"
                 style={{
