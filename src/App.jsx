@@ -1,8 +1,24 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import Transactions from './pages/Transactions'
+import Login from './pages/Login'
+import { useAuth } from './lib/AuthContext'
 
 function App() {
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#17252A' }}>
+        <p style={{ color: '#3AAFA9' }}>Loading...</p>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return <Login />
+  }
+
   return (
     <BrowserRouter>
       <div className="flex h-screen" style={{ backgroundColor: '#17252A' }}>

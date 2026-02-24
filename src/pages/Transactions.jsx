@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { USER_ID } from '../lib/constants'
+import { useAuth } from '../lib/AuthContext'
 
 export default function Transactions() {
+  const { user } = useAuth()
+  const USER_ID = user?.id
+
   const [categories, setCategories] = useState([])
   const [creditCards, setCreditCards] = useState([])
   const [expenses, setExpenses] = useState([])
@@ -21,10 +24,12 @@ export default function Transactions() {
   })
 
   useEffect(() => {
-    fetchCategories()
-    fetchCreditCards()
-    fetchExpenses()
-  }, [])
+    if (USER_ID) {
+      fetchCategories()
+      fetchCreditCards()
+      fetchExpenses()
+    }
+  }, [USER_ID])
 
   async function fetchCategories() {
     const { data, error } = await supabase
