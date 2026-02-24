@@ -121,7 +121,7 @@ export default function Login() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="you@email.com"
+              placeholder="Type your username"
               required
               className="rounded-lg px-3 py-2 text-sm focus:outline-none"
               style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
@@ -135,7 +135,7 @@ export default function Login() {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Type your password"
                 required
                 className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none pr-16"
                 style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
