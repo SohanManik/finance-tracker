@@ -36,8 +36,23 @@ export function AuthProvider({ children }) {
     return await supabase.auth.signOut()
   }
 
+  async function signInWithGoogle() {
+  return await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin
+    }
+  })
+}
+
+async function resetPassword(email) {
+  return await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/reset-password`
+  })
+}
+
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, signInWithGoogle, resetPassword }}>
       {children}
     </AuthContext.Provider>
   )
