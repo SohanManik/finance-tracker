@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../lib/AuthContext'
+import { useTheme } from '../lib/ThemeContext'
+import { themes } from '../lib/themes'
 
 const navItems = [
   { label: 'Dashboard', path: '/' },
@@ -13,14 +16,24 @@ const navItems = [
   { label: 'Goals', path: '/goals' },
 ]
 
-function Sidebar() {
+export default function Sidebar() {
   const { user, signOut } = useAuth()
+  const { theme, themeName, changeTheme } = useTheme()
+  const [showSettings, setShowSettings] = useState(false)
 
   return (
-    <aside className="w-64 flex flex-col border-r" style={{ backgroundColor: '#17252A', borderColor: '#2B7A78' }}>
-      <div className="p-6 border-b" style={{ borderColor: '#2B7A78' }}>
-        <h1 className="text-xl font-bold" style={{ color: '#FEFFFF' }}>Finance Tracker</h1>
+    <aside
+      className="w-64 flex flex-col border-r"
+      style={{ backgroundColor: theme.bg, borderColor: theme.accent }}
+    >
+      {/* Logo */}
+      <div className="p-6 border-b" style={{ borderColor: theme.accent }}>
+        <h1 className="text-xl font-bold" style={{ color: theme.textPrimary }}>
+          Finance Tracker
+        </h1>
       </div>
+
+      {/* Nav links */}
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map((item) => (
           <NavLink
@@ -29,12 +42,12 @@ function Sidebar() {
             end={item.path === '/'}
             className="block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
             style={({ isActive }) => ({
-              backgroundColor: isActive ? '#2B7A78' : 'transparent',
-              color: isActive ? '#FEFFFF' : '#3AAFA9',
+              backgroundColor: isActive ? theme.accent : 'transparent',
+              color: isActive ? theme.textPrimary : theme.accentHover,
             })}
             onMouseEnter={e => {
               if (!e.currentTarget.getAttribute('aria-current')) {
-                e.currentTarget.style.backgroundColor = '#2B7A7840'
+                e.currentTarget.style.backgroundColor = theme.borderFaint
               }
             }}
             onMouseLeave={e => {
@@ -48,15 +61,81 @@ function Sidebar() {
         ))}
       </nav>
 
-      {/* User info + logout at the bottom */}
-      <div className="p-4 border-t" style={{ borderColor: '#2B7A78' }}>
-        <p className="text-xs mb-3 truncate" style={{ color: '#3AAFA9' }}>{user?.email}</p>
+      {/* Settings panel */}
+      {showSettings && (
+        <div
+          className="mx-4 mb-3 rounded-xl p-4"
+          style={{ backgroundColor: theme.bgSecondary, border: `1px solid ${theme.borderFaint}` }}
+        >
+          <p className="text-xs font-semibold mb-3 uppercase tracking-wider" style={{ color: theme.textMuted }}>
+            Theme
+          </p>
+          <div className="grid grid-cols-4 gap-2">
+            {Object.entries(themes).map(([key, t]) => (
+              <button
+                key={key}
+                onClick={() => changeTheme(key)}
+                title={t.name}
+                className="flex flex-col items-center gap-1 group"
+              >
+                <div
+                  className="w-8 h-8 rounded-full border-2 transition-transform group-hover:scale-110"
+                  style={{
+                    backgroundColor: t.accent,
+                    borderColor: themeName === key ? theme.textPrimary : 'transparent',
+                    boxShadow: themeName === key ? `0 0 0 1px ${t.accent}` : 'none',
+                  }}
+                />
+                <span
+                  className="text-xs leading-tight text-center"
+                  style={{ color: themeName === key ? theme.textPrimary : theme.textMuted, fontSize: '9px' }}
+                >
+                  {t.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Bottom — settings + user + sign out */}
+      <div className="p-4 border-t" style={{ borderColor: theme.accent }}>
+        {/* Settings button */}
+        <button
+          onClick={() => setShowSettings(!showSettings)}
+          className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium mb-3 transition-colors"
+          style={{
+            backgroundColor: showSettings ? theme.accent : 'transparent',
+            color: showSettings ? theme.textPrimary : theme.accentHover,
+            border: `1px solid ${showSettings ? theme.accent : theme.borderFaint}`,
+          }}
+          onMouseEnter={e => {
+            if (!showSettings) e.currentTarget.style.backgroundColor = theme.borderFaint
+          }}
+          onMouseLeave={e => {
+            if (!showSettings) e.currentTarget.style.backgroundColor = 'transparent'
+          }}
+        >
+          <span>⚙️</span>
+          <span>Settings</span>
+        </button>
+
+        {/* User email */}
+        <p className="text-xs mb-3 truncate px-1" style={{ color: theme.accentHover }}>
+          {user?.email}
+        </p>
+
+        {/* Sign out */}
         <button
           onClick={signOut}
           className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{ backgroundColor: '#0D1F22', border: '1px solid #2B7A78', color: '#3AAFA9' }}
-          onMouseEnter={e => e.currentTarget.style.backgroundColor = '#7F1D1D'}
-          onMouseLeave={e => e.currentTarget.style.backgroundColor = '#0D1F22'}
+          style={{
+            backgroundColor: theme.bgSecondary,
+            border: `1px solid ${theme.accent}`,
+            color: theme.accentHover,
+          }}
+          onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.expenseBg}
+          onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.bgSecondary}
         >
           Sign Out
         </button>
@@ -64,5 +143,3 @@ function Sidebar() {
     </aside>
   )
 }
-
-export default Sidebar
