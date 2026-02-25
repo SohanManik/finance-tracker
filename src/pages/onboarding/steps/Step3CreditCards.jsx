@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTheme } from '../../../lib/ThemeContext'
 
 const CARD_ISSUERS = [
   'Chase', 'American Express', 'Citi', 'Capital One',
@@ -7,6 +8,7 @@ const CARD_ISSUERS = [
 ]
 
 export default function Step3CreditCards({ data, onUpdate }) {
+  const { theme } = useTheme()
   const [nickname, setNickname] = useState('')
   const [issuer, setIssuer] = useState('')
 
@@ -26,41 +28,42 @@ export default function Step3CreditCards({ data, onUpdate }) {
     <div>
       <div className="text-center mb-8">
         <div className="text-5xl mb-4">💳</div>
-        <h2 className="text-2xl font-bold mb-2" style={{ color: '#FEFFFF' }}>
+        <h2 className="text-2xl font-bold mb-2" style={{ color: theme.textPrimary }}>
           Any credit cards to track?
         </h2>
-        <p className="text-sm" style={{ color: '#3AAFA9' }}>
+        <p className="text-sm" style={{ color: theme.textMuted }}>
           Add the cards you use regularly. No card numbers — just names.
         </p>
       </div>
 
-      {/* Add card form */}
-      <div className="rounded-xl p-4 mb-4" style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78' }}>
+      <div className="rounded-xl p-4 mb-4" style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}` }}>
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
-            <label className="text-sm" style={{ color: '#3AAFA9' }}>Card nickname</label>
+            <label className="text-sm" style={{ color: theme.textSecondary }}>Card nickname</label>
             <input
               type="text"
               value={nickname}
               onChange={e => setNickname(e.target.value)}
               placeholder="e.g. Chase Sapphire, Amex Gold"
               className="rounded-lg px-3 py-2 text-sm focus:outline-none"
-              style={{ backgroundColor: '#0D1F22', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+              style={{ backgroundColor: theme.bgSecondary, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
               onKeyDown={e => e.key === 'Enter' && addCard()}
             />
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="text-sm" style={{ color: '#3AAFA9' }}>Issuer</label>
+            <label className="text-sm" style={{ color: theme.textSecondary }}>Issuer</label>
             <select
               value={issuer}
               onChange={e => setIssuer(e.target.value)}
               className="rounded-lg px-3 py-2 text-sm focus:outline-none"
-              style={{ backgroundColor: '#0D1F22', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+              style={{ backgroundColor: theme.bgSecondary, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
             >
               <option value="">Select issuer</option>
               {CARD_ISSUERS.map(i => (
-                <option key={i} value={i}>{i}</option>
+                <option key={i} value={i} style={{ backgroundColor: theme.bgSecondary, color: theme.textPrimary }}>
+                  {i}
+                </option>
               ))}
             </select>
           </div>
@@ -70,33 +73,32 @@ export default function Step3CreditCards({ data, onUpdate }) {
             onClick={addCard}
             disabled={!nickname.trim() || !issuer}
             className="py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40"
-            style={{ backgroundColor: '#2B7A78', color: '#FEFFFF' }}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3AAFA9'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2B7A78'}
+            style={{ backgroundColor: theme.accent, color: theme.bgSecondary }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.accentHover}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.accent}
           >
             + Add Card
           </button>
         </div>
       </div>
 
-      {/* Added cards list */}
       {data.credit_cards?.length > 0 && (
         <div className="flex flex-col gap-2">
           {data.credit_cards.map(card => (
             <div
               key={card.id}
               className="flex items-center justify-between px-4 py-3 rounded-lg"
-              style={{ backgroundColor: '#17252A', border: '1px solid #2B7A7860' }}
+              style={{ backgroundColor: theme.bg, border: `1px solid ${theme.borderFaint}` }}
             >
               <div>
-                <p className="text-sm font-medium" style={{ color: '#FEFFFF' }}>{card.nickname}</p>
-                <p className="text-xs" style={{ color: '#3AAFA9' }}>{card.issuer}</p>
+                <p className="text-sm font-medium" style={{ color: theme.textPrimary }}>{card.nickname}</p>
+                <p className="text-xs" style={{ color: theme.textMuted }}>{card.issuer}</p>
               </div>
               <button
                 type="button"
                 onClick={() => removeCard(card.id)}
                 className="text-xs px-2 py-1 rounded"
-                style={{ color: '#EF4444', backgroundColor: '#7F1D1D30' }}
+                style={{ color: theme.expense, backgroundColor: theme.expenseBg }}
               >
                 Remove
               </button>
@@ -106,7 +108,7 @@ export default function Step3CreditCards({ data, onUpdate }) {
       )}
 
       {(!data.credit_cards || data.credit_cards.length === 0) && (
-        <p className="text-center text-xs mt-4" style={{ color: '#2B7A78' }}>
+        <p className="text-center text-xs mt-4" style={{ color: theme.textMuted }}>
           No cards added yet. You can skip this and add them later.
         </p>
       )}

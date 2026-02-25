@@ -1,20 +1,20 @@
 export const themes = {
   light: {
-    name: 'Light',
-    bg: '#F8FAFC',
-    bgSecondary: '#FFFFFF',
-    accent: '#0EA5E9',
-    accentHover: '#0284C7',
-    textPrimary: '#0F172A',
-    textSecondary: '#334155',
-    textMuted: '#94A3B8',
-    border: '#0EA5E9',
-    borderFaint: '#0EA5E940',
-    expense: '#DC2626',
-    income: '#16A34A',
-    expenseBg: '#FEE2E2',
-    incomeBg: '#DCFCE7',
-  },
+  name: 'Light',
+  bg: '#F2F2F7',
+  bgSecondary: '#FFFFFF',
+  accent: '#8E8E93',        // lighter grey instead of dark charcoal
+  accentHover: '#636366',   // medium grey on hover
+  textPrimary: '#1C1C1E',
+  textSecondary: '#3C3C43',
+  textMuted: '#8E8E93',
+  border: '#C6C6C8',
+  borderFaint: '#E5E5EA',
+  expense: '#FF3B30',
+  income: '#34C759',
+  expenseBg: '#FFF0EE',
+  incomeBg: '#F0FFF4',
+},
 
   lace: {
     name: 'Lace',
@@ -69,7 +69,7 @@ pink: {
   },
 
   sapphire: {
-  name: 'Charcoal',
+  name: 'Dark',
   bg: '#1C1C1E',
   bgSecondary: '#2C2C2E',
   accent: '#636366',
@@ -137,4 +137,4 @@ dark: {
   },
 }
 
-export const defaultTheme = 'teal'
+export const defaultTheme = 'light'

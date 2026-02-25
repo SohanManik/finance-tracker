@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTheme } from '../../../lib/ThemeContext'
 
 const COMMON_SUBSCRIPTIONS = [
   { name: 'Netflix', icon: '🎬' },
@@ -22,8 +23,8 @@ const COMMON_SUBSCRIPTIONS = [
 ]
 
 export default function Step4Subscriptions({ data, onUpdate }) {
+  const { theme } = useTheme()
   const [customName, setCustomName] = useState('')
-  const [editingId, setEditingId] = useState(null)
   const subscriptions = data.subscriptions || []
 
   function toggleCommon(sub) {
@@ -73,15 +74,14 @@ export default function Step4Subscriptions({ data, onUpdate }) {
     <div>
       <div className="text-center mb-6">
         <div className="text-5xl mb-4">🔄</div>
-        <h2 className="text-2xl font-bold mb-2" style={{ color: '#FEFFFF' }}>
+        <h2 className="text-2xl font-bold mb-2" style={{ color: theme.textPrimary }}>
           Recurring bills & subscriptions
         </h2>
-        <p className="text-sm" style={{ color: '#3AAFA9' }}>
+        <p className="text-sm" style={{ color: theme.textMuted }}>
           Tap to select, then fill in the amount and due date.
         </p>
       </div>
 
-      {/* Common subscriptions grid */}
       <div className="grid grid-cols-3 gap-2 mb-6">
         {COMMON_SUBSCRIPTIONS.map(sub => {
           const selected = subscriptions.find(s => s.name === sub.name)
@@ -92,9 +92,9 @@ export default function Step4Subscriptions({ data, onUpdate }) {
               onClick={() => toggleCommon(sub)}
               className="flex flex-col items-center gap-1 py-3 px-2 rounded-lg text-xs font-medium transition-all"
               style={{
-                backgroundColor: selected ? '#2B7A78' : '#17252A',
-                border: `1px solid ${selected ? '#3AAFA9' : '#2B7A78'}`,
-                color: selected ? '#FEFFFF' : '#DEF2F1',
+                backgroundColor: selected ? theme.accent : theme.bg,
+                border: `1px solid ${selected ? theme.accentHover : theme.border}`,
+                color: selected ? theme.bgSecondary : theme.textSecondary,
               }}
             >
               <span className="text-xl">{sub.icon}</span>
@@ -104,7 +104,6 @@ export default function Step4Subscriptions({ data, onUpdate }) {
         })}
       </div>
 
-      {/* Custom subscription input */}
       <div className="flex gap-2 mb-6">
         <input
           type="text"
@@ -112,48 +111,49 @@ export default function Step4Subscriptions({ data, onUpdate }) {
           onChange={e => setCustomName(e.target.value)}
           placeholder="Add custom subscription..."
           className="flex-1 rounded-lg px-3 py-2 text-sm focus:outline-none"
-          style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+          style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
           onKeyDown={e => e.key === 'Enter' && addCustom()}
         />
         <button
           type="button"
           onClick={addCustom}
           className="px-4 py-2 rounded-lg text-sm font-medium"
-          style={{ backgroundColor: '#2B7A78', color: '#FEFFFF' }}
+          style={{ backgroundColor: theme.accent, color: theme.bgSecondary }}
+          onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.accentHover}
+          onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.accent}
         >
           Add
         </button>
       </div>
 
-      {/* Selected subscriptions — fill in details */}
       {subscriptions.length > 0 && (
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-medium" style={{ color: '#3AAFA9' }}>
+          <p className="text-xs font-medium" style={{ color: theme.textMuted }}>
             Fill in details for your selected subscriptions:
           </p>
           {subscriptions.map(sub => (
             <div
               key={sub.id}
               className="rounded-lg p-3"
-              style={{ backgroundColor: '#17252A', border: '1px solid #2B7A7860' }}
+              style={{ backgroundColor: theme.bg, border: `1px solid ${theme.borderFaint}` }}
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span>{sub.icon}</span>
-                  <span className="text-sm font-medium" style={{ color: '#FEFFFF' }}>{sub.name}</span>
+                  <span className="text-sm font-medium" style={{ color: theme.textPrimary }}>{sub.name}</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => removeSub(sub.id)}
                   className="text-xs px-2 py-1 rounded"
-                  style={{ color: '#EF4444', backgroundColor: '#7F1D1D30' }}
+                  style={{ color: theme.expense, backgroundColor: theme.expenseBg }}
                 >
                   Remove
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs" style={{ color: '#3AAFA9' }}>Amount ($)</label>
+                  <label className="text-xs" style={{ color: theme.textMuted }}>Amount ($)</label>
                   <input
                     type="number"
                     value={sub.amount}
@@ -162,11 +162,11 @@ export default function Step4Subscriptions({ data, onUpdate }) {
                     step="0.01"
                     min="0"
                     className="rounded px-2 py-1.5 text-sm focus:outline-none"
-                    style={{ backgroundColor: '#0D1F22', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+                    style={{ backgroundColor: theme.bgSecondary, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs" style={{ color: '#3AAFA9' }}>Day of month</label>
+                  <label className="text-xs" style={{ color: theme.textMuted }}>Day of month</label>
                   <input
                     type="number"
                     value={sub.due_day}
@@ -175,7 +175,7 @@ export default function Step4Subscriptions({ data, onUpdate }) {
                     min="1"
                     max="31"
                     className="rounded px-2 py-1.5 text-sm focus:outline-none"
-                    style={{ backgroundColor: '#0D1F22', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+                    style={{ backgroundColor: theme.bgSecondary, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
                   />
                 </div>
               </div>

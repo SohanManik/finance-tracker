@@ -100,46 +100,42 @@ export default function Sidebar() {
 
       {/* Bottom — settings + user + sign out */}
       <div className="p-4 border-t" style={{ borderColor: theme.accent }}>
-        {/* Settings button */}
-        <button
-          onClick={() => setShowSettings(!showSettings)}
-          className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium mb-3 transition-colors"
-          style={{
-            backgroundColor: showSettings ? theme.accent : 'transparent',
-            color: showSettings ? theme.textPrimary : theme.accentHover,
-            border: `1px solid ${showSettings ? theme.accent : theme.borderFaint}`,
-          }}
-          onMouseEnter={e => {
-            if (!showSettings) e.currentTarget.style.backgroundColor = theme.borderFaint
-          }}
-          onMouseLeave={e => {
-            if (!showSettings) e.currentTarget.style.backgroundColor = 'transparent'
-          }}
-        >
-          <span>⚙️</span>
-          <span>Settings</span>
-        </button>
+  {/* User email */}
+  <p className="text-xs mb-3 truncate px-1" style={{ color: theme.accentHover }}>
+    {user?.email}
+  </p>
 
-        {/* User email */}
-        <p className="text-xs mb-3 truncate px-1" style={{ color: theme.accentHover }}>
-          {user?.email}
-        </p>
+  {/* Settings button */}
+  <button
+  onClick={() => setShowSettings(!showSettings)}
+  className="w-full flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium mb-3 transition-colors"
+  style={{
+    backgroundColor: showSettings ? theme.expenseBg : theme.bgSecondary,
+    border: `1px solid ${theme.accent}`,
+    color: theme.accentHover,
+  }}
+  onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.borderFaint}
+  onMouseLeave={e => e.currentTarget.style.backgroundColor = showSettings ? theme.expenseBg : theme.bgSecondary}
+>
+  <span>⚙️</span>
+  <span>Settings</span>
+</button>
 
-        {/* Sign out */}
-        <button
-          onClick={signOut}
-          className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{
-            backgroundColor: theme.bgSecondary,
-            border: `1px solid ${theme.accent}`,
-            color: theme.accentHover,
-          }}
-          onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.expenseBg}
-          onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.bgSecondary}
-        >
-          Sign Out
-        </button>
-      </div>
+  {/* Sign out */}
+  <button
+    onClick={signOut}
+    className="w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+    style={{
+      backgroundColor: theme.bgSecondary,
+      border: `1px solid ${theme.accent}`,
+      color: theme.accentHover,
+    }}
+    onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.expenseBg}
+    onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.bgSecondary}
+  >
+    Sign Out
+  </button>
+</div>
     </aside>
   )
 }

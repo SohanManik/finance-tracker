@@ -1,3 +1,5 @@
+import { useTheme } from '../../../lib/ThemeContext'
+
 const GOALS = [
   { label: 'Track my spending', icon: '📊' },
   { label: 'Manage my budget', icon: '💰' },
@@ -8,14 +10,16 @@ const GOALS = [
 ]
 
 export default function Step1Welcome({ data, onUpdate }) {
+  const { theme } = useTheme()
+
   return (
     <div>
       <div className="text-center mb-8">
         <div className="text-5xl mb-4">👋</div>
-        <h2 className="text-2xl font-bold mb-2" style={{ color: '#FEFFFF' }}>
+        <h2 className="text-2xl font-bold mb-2" style={{ color: theme.textPrimary }}>
           Welcome! Let's get you set up.
         </h2>
-        <p className="text-sm" style={{ color: '#3AAFA9' }}>
+        <p className="text-sm" style={{ color: theme.textMuted }}>
           What's your main reason for using Finance Tracker?
         </p>
       </div>
@@ -28,9 +32,9 @@ export default function Step1Welcome({ data, onUpdate }) {
             onClick={() => onUpdate({ goal: goal.label })}
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-left transition-all"
             style={{
-              backgroundColor: data.goal === goal.label ? '#2B7A78' : '#17252A',
-              border: `1px solid ${data.goal === goal.label ? '#3AAFA9' : '#2B7A78'}`,
-              color: data.goal === goal.label ? '#FEFFFF' : '#DEF2F1',
+              backgroundColor: data.goal === goal.label ? theme.accent : theme.bg,
+              border: `1px solid ${data.goal === goal.label ? theme.accentHover : theme.border}`,
+              color: data.goal === goal.label ? theme.bgSecondary : theme.textSecondary,
             }}
           >
             <span className="text-xl">{goal.icon}</span>

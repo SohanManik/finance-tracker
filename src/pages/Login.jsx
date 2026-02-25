@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../lib/AuthContext'
+import { useTheme } from '../lib/ThemeContext'
 
 function validatePassword(password) {
   const rules = [
@@ -14,6 +15,7 @@ function validatePassword(password) {
 
 export default function Login() {
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
+  const { theme } = useTheme()
   const [isSignUp, setIsSignUp] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [email, setEmail] = useState('')
@@ -112,19 +114,19 @@ export default function Login() {
 
   if (showConfirmation) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#17252A' }}>
-        <div className="w-full max-w-md p-8 rounded-xl border text-center" style={{ backgroundColor: '#0D1F22', borderColor: '#2B7A78' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: theme.bg }}>
+        <div className="w-full max-w-md p-8 rounded-xl border text-center" style={{ backgroundColor: theme.bgSecondary, borderColor: theme.border }}>
           <div className="text-5xl mb-6">{confirmationType === 'reset' ? '🔐' : '📬'}</div>
-          <h1 className="text-2xl font-bold mb-3" style={{ color: '#FEFFFF' }}>
+          <h1 className="text-2xl font-bold mb-3" style={{ color: theme.textPrimary }}>
             Check your email
           </h1>
-          <p className="text-sm mb-2" style={{ color: '#DEF2F1' }}>
+          <p className="text-sm mb-2" style={{ color: theme.textSecondary }}>
             {confirmationType === 'reset'
               ? 'We sent a password reset link to'
               : 'We sent a confirmation link to'}
           </p>
-          <p className="text-sm font-medium mb-6" style={{ color: '#3AAFA9' }}>{email}</p>
-          <p className="text-sm mb-8" style={{ color: '#9CA3AF' }}>
+          <p className="text-sm font-medium mb-6" style={{ color: theme.accent }}>{email}</p>
+          <p className="text-sm mb-8" style={{ color: theme.textMuted }}>
             {confirmationType === 'reset'
               ? 'Click the link in the email to reset your password, then come back to sign in.'
               : 'Click the link in the email to activate your account, then come back here to sign in.'}
@@ -140,9 +142,9 @@ export default function Login() {
               setBirthDate('')
             }}
             className="px-6 py-2 rounded-lg text-sm font-medium transition-colors"
-            style={{ backgroundColor: '#2B7A78', color: '#FEFFFF' }}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3AAFA9'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2B7A78'}
+            style={{ backgroundColor: theme.accent, color: theme.textPrimary }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.accentHover}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.accent}
           >
             Back to Sign In
           </button>
@@ -152,12 +154,12 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#17252A' }}>
-      <div className="w-full max-w-md p-8 rounded-xl border" style={{ backgroundColor: '#0D1F22', borderColor: '#2B7A78' }}>
-        <h1 className="text-2xl font-bold mb-2 text-center" style={{ color: '#FEFFFF' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: theme.bg }}>
+      <div className="w-full max-w-md p-8 rounded-xl border" style={{ backgroundColor: theme.bgSecondary, borderColor: theme.border }}>
+        <h1 className="text-2xl font-bold mb-2 text-center" style={{ color: theme.textPrimary }}>
           Finance Tracker
         </h1>
-        <p className="text-sm text-center mb-8" style={{ color: '#3AAFA9' }}>
+        <p className="text-sm text-center mb-8" style={{ color: theme.textMuted }}>
           {isForgotPassword
             ? 'Reset your password'
             : isSignUp
@@ -166,9 +168,8 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Email */}
           <div className="flex flex-col gap-1">
-            <label className="text-sm" style={{ color: '#3AAFA9' }}>Email</label>
+            <label className="text-sm" style={{ color: theme.textSecondary }}>Email</label>
             <input
               type="email"
               value={email}
@@ -176,14 +177,13 @@ export default function Login() {
               placeholder="you@email.com"
               required
               className="rounded-lg px-3 py-2 text-sm focus:outline-none"
-              style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+              style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
             />
           </div>
 
-          {/* Full name — sign up only */}
           {isSignUp && (
             <div className="flex flex-col gap-1">
-              <label className="text-sm" style={{ color: '#3AAFA9' }}>Full name</label>
+              <label className="text-sm" style={{ color: theme.textSecondary }}>Full name</label>
               <input
                 type="text"
                 value={fullName}
@@ -191,30 +191,28 @@ export default function Login() {
                 placeholder="Sohan Manik"
                 required
                 className="rounded-lg px-3 py-2 text-sm focus:outline-none"
-                style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+                style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
               />
             </div>
           )}
 
-          {/* Date of birth — sign up only */}
           {isSignUp && (
             <div className="flex flex-col gap-1">
-              <label className="text-sm" style={{ color: '#3AAFA9' }}>Date of birth</label>
+              <label className="text-sm" style={{ color: theme.textSecondary }}>Date of birth</label>
               <input
                 type="date"
                 value={birthDate}
                 onChange={e => setBirthDate(e.target.value)}
                 required
                 className="rounded-lg px-3 py-2 text-sm focus:outline-none"
-                style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+                style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
               />
             </div>
           )}
 
-          {/* Password */}
           {!isForgotPassword && (
             <div className="flex flex-col gap-1">
-              <label className="text-sm" style={{ color: '#3AAFA9' }}>Password</label>
+              <label className="text-sm" style={{ color: theme.textSecondary }}>Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -223,13 +221,13 @@ export default function Login() {
                   placeholder="••••••••"
                   required
                   className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none pr-16"
-                  style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+                  style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-                  style={{ color: '#3AAFA9' }}
+                  style={{ color: theme.accent }}
                 >
                   {showPassword ? 'Hide' : 'Show'}
                 </button>
@@ -239,7 +237,7 @@ export default function Login() {
                   type="button"
                   onClick={handleForgotPassword}
                   className="text-xs underline self-end mt-1"
-                  style={{ color: '#3AAFA9' }}
+                  style={{ color: theme.accent }}
                 >
                   Forgot password?
                 </button>
@@ -247,15 +245,14 @@ export default function Login() {
             </div>
           )}
 
-          {/* Password rules — sign up only */}
           {isSignUp && password.length > 0 && (
-            <div className="rounded-lg p-3 flex flex-col gap-1.5" style={{ backgroundColor: '#17252A', border: '1px solid #2B7A7840' }}>
+            <div className="rounded-lg p-3 flex flex-col gap-1.5" style={{ backgroundColor: theme.bg, border: `1px solid ${theme.borderFaint}` }}>
               {passwordRules.map((rule, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <span className="text-xs" style={{ color: rule.passed ? '#22C55E' : '#EF4444' }}>
+                  <span className="text-xs" style={{ color: rule.passed ? theme.income : theme.expense }}>
                     {rule.passed ? '✓' : '✗'}
                   </span>
-                  <span className="text-xs" style={{ color: rule.passed ? '#22C55E' : '#9CA3AF' }}>
+                  <span className="text-xs" style={{ color: rule.passed ? theme.income : theme.textMuted }}>
                     {rule.label}
                   </span>
                 </div>
@@ -263,10 +260,9 @@ export default function Login() {
             </div>
           )}
 
-          {/* Confirm password — sign up only */}
           {isSignUp && (
             <div className="flex flex-col gap-1">
-              <label className="text-sm" style={{ color: '#3AAFA9' }}>Confirm password</label>
+              <label className="text-sm" style={{ color: theme.textSecondary }}>Confirm password</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
@@ -275,32 +271,32 @@ export default function Login() {
                 required
                 className="rounded-lg px-3 py-2 text-sm focus:outline-none"
                 style={{
-                  backgroundColor: '#17252A',
+                  backgroundColor: theme.bg,
                   border: `1px solid ${confirmPassword.length > 0
-                    ? confirmPassword === password ? '#22C55E' : '#EF4444'
-                    : '#2B7A78'}`,
-                  color: '#DEF2F1'
+                    ? confirmPassword === password ? theme.income : theme.expense
+                    : theme.border}`,
+                  color: theme.textPrimary
                 }}
               />
               {confirmPassword.length > 0 && confirmPassword !== password && (
-                <p className="text-xs text-red-400">Passwords do not match</p>
+                <p className="text-xs" style={{ color: theme.expense }}>Passwords do not match</p>
               )}
               {confirmPassword.length > 0 && confirmPassword === password && (
-                <p className="text-xs" style={{ color: '#22C55E' }}>Passwords match</p>
+                <p className="text-xs" style={{ color: theme.income }}>Passwords match</p>
               )}
             </div>
           )}
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
-          {message && <p className="text-sm" style={{ color: '#3AAFA9' }}>{message}</p>}
+          {error && <p className="text-sm" style={{ color: theme.expense }}>{error}</p>}
+          {message && <p className="text-sm" style={{ color: theme.accent }}>{message}</p>}
 
           <button
             type="submit"
             disabled={loading}
             className="py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 mt-2"
-            style={{ backgroundColor: '#2B7A78', color: '#FEFFFF' }}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3AAFA9'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2B7A78'}
+            style={{ backgroundColor: theme.accent, color: theme.bgSecondary }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.accentHover}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.accent}
           >
             {loading
               ? 'Please wait...'
@@ -312,21 +308,20 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Divider and Google — sign in only */}
         {!isSignUp && !isForgotPassword && (
           <>
             <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px" style={{ backgroundColor: '#2B7A78' }}></div>
-              <span className="text-xs" style={{ color: '#3AAFA9' }}>OR</span>
-              <div className="flex-1 h-px" style={{ backgroundColor: '#2B7A78' }}></div>
+              <div className="flex-1 h-px" style={{ backgroundColor: theme.border }}></div>
+              <span className="text-xs" style={{ color: theme.textMuted }}>OR</span>
+              <div className="flex-1 h-px" style={{ backgroundColor: theme.border }}></div>
             </div>
 
             <button
               onClick={handleGoogleSignIn}
               className="w-full py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-3"
-              style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
-              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#2B7A7830'}
-              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#17252A'}
+              style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textSecondary }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.borderFaint}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.bg}
             >
               <svg width="18" height="18" viewBox="0 0 18 18">
                 <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
@@ -339,24 +334,24 @@ export default function Login() {
           </>
         )}
 
-        <p className="text-sm text-center mt-6" style={{ color: '#3AAFA9' }}>
+        <p className="text-sm text-center mt-6" style={{ color: theme.textMuted }}>
           {isForgotPassword ? (
             <button
               onClick={() => { setIsForgotPassword(false); setError('') }}
               className="underline"
-              style={{ color: '#FEFFFF' }}
+              style={{ color: theme.textPrimary }}
             >
               Back to Sign In
             </button>
           ) : isSignUp ? (
             <>Already have an account?{' '}
-              <button onClick={handleSwitch} className="underline" style={{ color: '#FEFFFF' }}>
+              <button onClick={handleSwitch} className="underline" style={{ color: theme.textPrimary }}>
                 Sign in
               </button>
             </>
           ) : (
             <>Don't have an account?{' '}
-              <button onClick={handleSwitch} className="underline" style={{ color: '#FEFFFF' }}>
+              <button onClick={handleSwitch} className="underline" style={{ color: theme.textPrimary }}>
                 Sign up
               </button>
             </>
