@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../lib/AuthContext";
+import { useTheme } from "../../lib/ThemeContext";
+import { themes } from "../../lib/themes";
 import ProgressBar from "./ProgressBar";
 import Step1Welcome from "./steps/Step1Welcome";
 import Step2Employment from "./steps/Step2Employment";
@@ -32,10 +34,12 @@ const DEFAULT_CATEGORIES = [
   "Miscellaneous",
 ];
 
-const SKIPPABLE_STEPS = [1, 3, 4, 5]; // Step 2 (employment) is required
+const SKIPPABLE_STEPS = [1, 3, 4, 5];
 
 export default function Onboarding() {
   const { user } = useAuth();
+  const { themes: allThemes } = useTheme();
+  const theme = allThemes.light
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
@@ -80,14 +84,12 @@ export default function Onboarding() {
     try {
       const userId = user.id;
 
-      // 1. Create user record
       await supabase.from("users").upsert({
         id: userId,
         email: user.email,
         full_name: data.full_name || user.email.split("@")[0],
       });
 
-      // 2. Seed default categories
       const categoryRows = DEFAULT_CATEGORIES.map((name) => ({
         user_id: userId,
         name,
@@ -98,7 +100,6 @@ export default function Onboarding() {
         ignoreDuplicates: true,
       });
 
-      // 3. Save employment record
       if (data.employer_name && data.pay_frequency) {
         const { data: freqData } = await supabase
           .from("pay_frequencies")
@@ -129,7 +130,6 @@ export default function Onboarding() {
         });
       }
 
-      // 4. Save credit cards
       if (data.credit_cards.length > 0) {
         const cardRows = data.credit_cards.map((card) => ({
           user_id: userId,
@@ -139,7 +139,6 @@ export default function Onboarding() {
         await supabase.from("credit_cards").insert(cardRows);
       }
 
-      // 5. Save subscriptions as recurring transactions
       if (data.subscriptions.length > 0) {
         const { data: freqData } = await supabase
           .from("frequencies")
@@ -174,7 +173,6 @@ export default function Onboarding() {
         }
       }
 
-      // 6. Save savings goal
       if (data.goal_name && data.goal_amount) {
         await supabase.from("financial_goals").insert({
           user_id: userId,
@@ -185,7 +183,6 @@ export default function Onboarding() {
         });
       }
 
-      // 7. Mark onboarding complete in user metadata
       await supabase.auth.updateUser({
         data: { onboarding_complete: true },
       });
@@ -223,24 +220,23 @@ export default function Onboarding() {
   return (
     <div
       className="min-h-screen flex items-center justify-center p-4"
-      style={{ backgroundColor: "#17252A" }}
+      style={{ backgroundColor: theme.bg }}
     >
       <div className="w-full max-w-lg">
         <div
           className="rounded-xl border p-8"
-          style={{ backgroundColor: "#0D1F22", borderColor: "#2B7A78" }}
+          style={{ backgroundColor: theme.bgSecondary, borderColor: theme.border }}
         >
           <ProgressBar current={step} total={TOTAL_STEPS} />
 
-          {/* Step content */}
           <div className="mb-8">{steps[step]}</div>
 
-          {/* Error */}
           {error && (
-            <p className="text-sm text-red-400 mb-4 text-center">{error}</p>
+            <p className="text-sm mb-4 text-center" style={{ color: theme.expense }}>
+              {error}
+            </p>
           )}
 
-          {/* Navigation buttons */}
           <div className="flex gap-3">
             {step > 1 && (
               <button
@@ -248,9 +244,9 @@ export default function Onboarding() {
                 onClick={handleBack}
                 className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors"
                 style={{
-                  backgroundColor: "#17252A",
-                  border: "1px solid #2B7A78",
-                  color: "#3AAFA9",
+                  backgroundColor: theme.bg,
+                  border: `1px solid ${theme.border}`,
+                  color: theme.accent,
                 }}
               >
                 Back
@@ -262,7 +258,7 @@ export default function Onboarding() {
                 type="button"
                 onClick={() => setStep(step + 1)}
                 className="py-2 px-4 rounded-lg text-sm transition-colors"
-                style={{ color: "#2B7A78" }}
+                style={{ color: theme.textMuted }}
               >
                 Skip
               </button>
@@ -273,19 +269,15 @@ export default function Onboarding() {
               onClick={handleNext}
               disabled={!canProceed() || saving}
               className="flex-1 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40"
-              style={{ backgroundColor: "#2B7A78", color: "#FEFFFF" }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "#3AAFA9")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "#2B7A78")
-              }
+              style={{ backgroundColor: theme.accent, color: theme.bgSecondary }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = theme.accentHover)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = theme.accent)}
             >
               {saving
                 ? "Setting up your account..."
                 : step === TOTAL_STEPS
-                  ? "Take me to my dashboard"
-                  : "Continue"}
+                ? "Take me to my dashboard"
+                : "Continue"}
             </button>
           </div>
         </div>

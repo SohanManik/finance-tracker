@@ -15,7 +15,8 @@ function validatePassword(password) {
 
 export default function Login() {
   const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
-  const { theme } = useTheme()
+  const { themes } = useTheme()
+  const theme = themes.light
   const [isSignUp, setIsSignUp] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [email, setEmail] = useState('')
@@ -174,7 +175,7 @@ export default function Login() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="you@email.com"
+              placeholder="Type username"
               required
               className="rounded-lg px-3 py-2 text-sm focus:outline-none"
               style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
@@ -218,7 +219,7 @@ export default function Login() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Type password"
                   required
                   className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none pr-16"
                   style={{ backgroundColor: theme.bg, border: `1px solid ${theme.border}`, color: theme.textPrimary }}
