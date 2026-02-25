@@ -17,6 +17,8 @@ export default function Login() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [email, setEmail] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [birthDate, setBirthDate] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
@@ -56,12 +58,20 @@ export default function Login() {
         setError('Passwords do not match.')
         return
       }
+      if (!fullName.trim()) {
+        setError('Please enter your full name.')
+        return
+      }
+      if (!birthDate) {
+        setError('Please enter your date of birth.')
+        return
+      }
     }
 
     setLoading(true)
 
     if (isSignUp) {
-      const { error } = await signUp(email, password)
+      const { error } = await signUp(email, password, fullName, birthDate)
       if (error) {
         setError(error.message)
       } else {
@@ -88,6 +98,8 @@ export default function Login() {
     setMessage('')
     setPassword('')
     setConfirmPassword('')
+    setFullName('')
+    setBirthDate('')
   }
 
   function handleForgotPassword() {
@@ -98,14 +110,13 @@ export default function Login() {
     setPassword('')
   }
 
-  // Confirmation screen (signup or password reset)
   if (showConfirmation) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#17252A' }}>
         <div className="w-full max-w-md p-8 rounded-xl border text-center" style={{ backgroundColor: '#0D1F22', borderColor: '#2B7A78' }}>
           <div className="text-5xl mb-6">{confirmationType === 'reset' ? '🔐' : '📬'}</div>
           <h1 className="text-2xl font-bold mb-3" style={{ color: '#FEFFFF' }}>
-            {confirmationType === 'reset' ? 'Check your email' : 'Check your email'}
+            Check your email
           </h1>
           <p className="text-sm mb-2" style={{ color: '#DEF2F1' }}>
             {confirmationType === 'reset'
@@ -125,6 +136,8 @@ export default function Login() {
               setIsSignUp(false)
               setPassword('')
               setConfirmPassword('')
+              setFullName('')
+              setBirthDate('')
             }}
             className="px-6 py-2 rounded-lg text-sm font-medium transition-colors"
             style={{ backgroundColor: '#2B7A78', color: '#FEFFFF' }}
@@ -153,54 +166,88 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Email */}
           <div className="flex flex-col gap-1">
             <label className="text-sm" style={{ color: '#3AAFA9' }}>Email</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="Type username"
+              placeholder="you@email.com"
               required
               className="rounded-lg px-3 py-2 text-sm focus:outline-none"
               style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
             />
           </div>
 
-          {!isForgotPassword && (
-          <div className="flex flex-col gap-1">
-            <label className="text-sm" style={{ color: '#3AAFA9' }}>Password</label>
-            <div className="relative">
+          {/* Full name — sign up only */}
+          {isSignUp && (
+            <div className="flex flex-col gap-1">
+              <label className="text-sm" style={{ color: '#3AAFA9' }}>Full name</label>
               <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Type password"
+                type="text"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                placeholder="Sohan Manik"
                 required
-                className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none pr-16"
+                className="rounded-lg px-3 py-2 text-sm focus:outline-none"
                 style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-                style={{ color: '#3AAFA9' }}
-              >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
             </div>
-            {!isSignUp && (
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="text-xs underline self-start mt-1"
-                style={{ color: '#3AAFA9' }}
-              >
-                Forgot Password?
-              </button>
-            )}
-          </div>
-        )}
+          )}
 
+          {/* Date of birth — sign up only */}
+          {isSignUp && (
+            <div className="flex flex-col gap-1">
+              <label className="text-sm" style={{ color: '#3AAFA9' }}>Date of birth</label>
+              <input
+                type="date"
+                value={birthDate}
+                onChange={e => setBirthDate(e.target.value)}
+                required
+                className="rounded-lg px-3 py-2 text-sm focus:outline-none"
+                style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+              />
+            </div>
+          )}
+
+          {/* Password */}
+          {!isForgotPassword && (
+            <div className="flex flex-col gap-1">
+              <label className="text-sm" style={{ color: '#3AAFA9' }}>Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="w-full rounded-lg px-3 py-2 text-sm focus:outline-none pr-16"
+                  style={{ backgroundColor: '#17252A', border: '1px solid #2B7A78', color: '#DEF2F1' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+                  style={{ color: '#3AAFA9' }}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+              {!isSignUp && (
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-xs underline self-end mt-1"
+                  style={{ color: '#3AAFA9' }}
+                >
+                  Forgot password?
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Password rules — sign up only */}
           {isSignUp && password.length > 0 && (
             <div className="rounded-lg p-3 flex flex-col gap-1.5" style={{ backgroundColor: '#17252A', border: '1px solid #2B7A7840' }}>
               {passwordRules.map((rule, i) => (
@@ -216,14 +263,15 @@ export default function Login() {
             </div>
           )}
 
+          {/* Confirm password — sign up only */}
           {isSignUp && (
             <div className="flex flex-col gap-1">
-              <label className="text-sm" style={{ color: '#3AAFA9' }}>Confirm Password</label>
+              <label className="text-sm" style={{ color: '#3AAFA9' }}>Confirm password</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
-                placeholder="Type password"
+                placeholder="••••••••"
                 required
                 className="rounded-lg px-3 py-2 text-sm focus:outline-none"
                 style={{
@@ -264,7 +312,7 @@ export default function Login() {
           </button>
         </form>
 
-        {/* Divider — only show on sign in */}
+        {/* Divider and Google — sign in only */}
         {!isSignUp && !isForgotPassword && (
           <>
             <div className="flex items-center gap-3 my-6">
@@ -293,16 +341,24 @@ export default function Login() {
 
         <p className="text-sm text-center mt-6" style={{ color: '#3AAFA9' }}>
           {isForgotPassword ? (
-            <button onClick={() => { setIsForgotPassword(false); setError('') }} className="underline" style={{ color: '#FEFFFF' }}>
+            <button
+              onClick={() => { setIsForgotPassword(false); setError('') }}
+              className="underline"
+              style={{ color: '#FEFFFF' }}
+            >
               Back to Sign In
             </button>
           ) : isSignUp ? (
             <>Already have an account?{' '}
-              <button onClick={handleSwitch} className="underline" style={{ color: '#FEFFFF' }}>Sign in</button>
+              <button onClick={handleSwitch} className="underline" style={{ color: '#FEFFFF' }}>
+                Sign in
+              </button>
             </>
           ) : (
             <>Don't have an account?{' '}
-              <button onClick={handleSwitch} className="underline" style={{ color: '#FEFFFF' }}>Sign up</button>
+              <button onClick={handleSwitch} className="underline" style={{ color: '#FEFFFF' }}>
+                Sign up
+              </button>
             </>
           )}
         </p>

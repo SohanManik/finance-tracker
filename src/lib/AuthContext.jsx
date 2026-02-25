@@ -8,13 +8,11 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
-    // Listen for auth changes (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null)
@@ -24,8 +22,28 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe()
   }, [])
 
-  async function signUp(email, password) {
-    return await supabase.auth.signUp({ email, password })
+  async function signUp(email, password, fullName, birthDate) {
+    const response = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          birth_date: birthDate,
+        }
+      }
+    })
+
+    if (response.data?.user && !response.error) {
+      await supabase.from('users').insert({
+        id: response.data.user.id,
+        email: email,
+        full_name: fullName,
+        birth_date: birthDate || null,
+      })
+    }
+
+    return response
   }
 
   async function signIn(email, password) {
@@ -37,19 +55,19 @@ export function AuthProvider({ children }) {
   }
 
   async function signInWithGoogle() {
-  return await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: window.location.origin
-    }
-  })
-}
+    return await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    })
+  }
 
-async function resetPassword(email) {
-  return await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/reset-password`
-  })
-}
+  async function resetPassword(email) {
+    return await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`
+    })
+  }
 
   return (
     <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, signInWithGoogle, resetPassword }}>
