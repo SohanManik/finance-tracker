@@ -38,10 +38,10 @@ export default function Transactions() {
       .eq("user_id", USER_ID)
       .eq("is_deleted", false)
       .order("name");
+
     if (error) console.error("Categories error:", error.message);
 
     if (data && data.length === 0) {
-      // No categories found — seed defaults automatically
       const defaults = [
         "Rent & Housing",
         "Food & Dining",
@@ -154,6 +154,20 @@ export default function Transactions() {
     setLoading(false);
   }
 
+  async function handleDelete(id) {
+    const { error } = await supabase
+      .from("expenses")
+      .update({ is_deleted: true })
+      .eq("id", id)
+      .eq("user_id", USER_ID);
+
+    if (error) {
+      console.error("Delete error:", error.message);
+    } else {
+      setExpenses(expenses.filter((e) => e.id !== id));
+    }
+  }
+
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -191,7 +205,6 @@ export default function Transactions() {
             New Transaction
           </h2>
 
-          {/* Income / Expense Toggle */}
           <div className="flex gap-2 mb-6">
             {["expense", "income"].map((type) => (
               <button
@@ -341,7 +354,11 @@ export default function Transactions() {
                   >
                     <option value="">Select a category</option>
                     {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
+                      <option
+                        key={cat.id}
+                        value={cat.id}
+                        style={{ backgroundColor: "#0D1F22", color: "#DEF2F1" }}
+                      >
                         {cat.name}
                       </option>
                     ))}
@@ -362,7 +379,6 @@ export default function Transactions() {
               )}
             </div>
 
-            {/* Credit Card — only show for expenses */}
             {form.transaction_type === "expense" && (
               <div className="flex flex-col gap-1 col-span-2">
                 <label className="text-sm" style={{ color: "#3AAFA9" }}>
@@ -476,13 +492,14 @@ export default function Transactions() {
                 >
                   Amount
                 </th>
+                <th className="px-6 py-4" />
               </tr>
             </thead>
             <tbody>
               {expenses.map((expense) => (
                 <tr
                   key={expense.id}
-                  className="border-b transition-colors"
+                  className="border-b transition-colors group"
                   style={{ borderColor: "#2B7A7840" }}
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.backgroundColor = "#2B7A7820")
@@ -520,6 +537,15 @@ export default function Transactions() {
                     style={{ color: "#FF6B6B" }}
                   >
                     -${parseFloat(expense.amount).toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => handleDelete(expense.id)}
+                      className="text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                      style={{ color: "#EF4444", backgroundColor: "#7F1D1D30" }}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
