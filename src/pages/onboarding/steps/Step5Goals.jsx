@@ -32,26 +32,6 @@ export default function Step5Goals({ data, onUpdate }) {
 
         <div className="flex flex-col gap-1">
           <label className="text-sm" style={{ color: "#3AAFA9" }}>
-            Target amount ($)
-          </label>
-          <input
-            type="number"
-            value={data.goal_amount || ""}
-            onChange={(e) => onUpdate({ goal_amount: e.target.value })}
-            placeholder="e.g. 5000"
-            step="0.01"
-            min="0"
-            className="rounded-lg px-3 py-2 text-sm focus:outline-none"
-            style={{
-              backgroundColor: "#17252A",
-              border: "1px solid #2B7A78",
-              color: "#DEF2F1",
-            }}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-sm" style={{ color: "#3AAFA9" }}>
             Target amount
           </label>
           <input
